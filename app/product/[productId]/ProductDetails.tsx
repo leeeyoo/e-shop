@@ -4,6 +4,7 @@ import Button from "@/app/components/Button";
 import ProductImage from "@/app/components/products/ProductImage";
 import SetColor from "@/app/components/products/SetColor";
 import SetQuantity from "@/app/components/products/SetQuantity";
+import { useCart } from "@/hooks/useCart";
 import { Rating } from "@mui/material";
 import { useCallback, useState } from "react";
 
@@ -35,6 +36,7 @@ const Horizontal = () => {
 const ProductDetails: React.FC<ProductDetailsProps> = ({
   product
 }) => {
+  const {handleAddProductToCart, cartProducts} = useCart()
   const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: product.id,
     name: product.name,
@@ -46,9 +48,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     price: product.price,
   });
 
-  console.log(cartProduct)
+  console.log(cartProducts)
 
-  const prodectRating = product.reviews.reduce((acc: number, item: any) => (item.rating + acc), 0) / product.reviews.length
+  const productRating = product.reviews.reduce((acc: number, item: any) => (item.rating + acc), 0) / product.reviews.length
 
   const handleColorSelect = useCallback((value: SelectedImgType) => {
     setCartProduct((prev) => {
@@ -60,7 +62,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     if (cartProduct.quantity === 99) return;
 
     setCartProduct((prev) => {
-      return { ...prev, quantity: prev.quantity++ }
+      return { ...prev, quantity: (prev.quantity + 1) }
     })
   }, [cartProduct])
 
@@ -68,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     if (cartProduct.quantity === 1) return;
 
     setCartProduct((prev) => {
-      return { ...prev, quantity: prev.quantity-- }
+      return { ...prev, quantity: (prev.quantity - 1) }
     })
   }, [cartProduct])
 
@@ -82,7 +84,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
       <div className="flex flex-col gap-1 text-neutral-500 text-sm">
         <h2 className="text-3xl font-bold text-neutral-700">{product.name}</h2>
         <div className="flex items-center gap-2">
-          <Rating value={prodectRating} readOnly />
+          <Rating value={productRating} readOnly />
           <div>{product.reviews.length} reviews</div>
         </div>
         <Horizontal />
@@ -111,7 +113,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         <div className="max-w-[300px]">
           <Button
             label="Add to Cart"
-            onClick={() => { }}
+            onClick={() => handleAddProductToCart(cartProduct)}
           />
         </div>
       </div>
