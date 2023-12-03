@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "../Container";
 import { Noto_Sans } from 'next/font/google'
+import CartCount from "./CartCount";
 
 const logo = Noto_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] })
 
@@ -13,7 +14,7 @@ const NavBar = () => {
             <Link href="/" className={`${logo.className} font-bold text-xl`}>-4degree.</Link>
             <div className="hidden md:block">Search</div>
             <div className="flex items-center gap-8 md:gap-12">
-              <div>Cart</div>
+              <CartCount />
               <div>UserMenu</div>
             </div>
           </div>
