@@ -3,10 +3,13 @@ import Container from "../Container";
 import { Noto_Sans } from 'next/font/google'
 import CartCount from "./CartCount";
 import UserMenu from "./UserMenu";
+import { getCurrentUser } from "@/actions/getCurrentUser";
 
 const logo = Noto_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] })
 
-const NavBar = () => {
+const NavBar = async () => {
+  const currentUser = await getCurrentUser()
+
   return (
     <div className="sticky top-0 w-full bg-white z-30">
       <div className="py-4 border-b-[1px]">
@@ -16,7 +19,7 @@ const NavBar = () => {
             <div className="hidden md:block">Search</div>
             <div className="flex items-center gap-8 md:gap-12">
               <CartCount />
-              <UserMenu />
+              <UserMenu currentUser={currentUser} />
             </div>
           </div>
         </Container>
