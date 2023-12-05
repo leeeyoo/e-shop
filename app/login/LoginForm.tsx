@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         outline
         label="Continue with Google"
         icon={FaGoogle}
-        onClick={() => { }}
+        onClick={() => {signIn("google")}}
       />
       <hr className="bg-neutral-300 w-full h-px" />
       <Input

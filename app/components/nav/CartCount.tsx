@@ -13,7 +13,7 @@ const CartCount = () => {
       <div className="text-3xl">
         <FaShoppingCart />
       </div>
-      <span className="absolute top-[-10px] right-[-10px] bg-neutral-700 text-white h-6 w-6 rounded-full flex items-center justify-center text-sm">{cartTotalQty}</span>
+      <span className="absolute top-[-10px] right-[-10px] bg-sky-500 text-white h-6 w-6 rounded-full flex items-center justify-center text-sm">{cartTotalQty}</span>
     </div>
    );
 }

@@ -28,7 +28,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
         <div
           onClick={toggleOpen}
           className="p-2 border-[1px] border-neutral-300 flex flex-row items-center gap-1 rounded-full cursor-pointer hover:shadow-md transition text-neutral-700">
-          <Avatar />
+          <Avatar src={currentUser?.image} />
           <FaChevronDown />
         </div>
         {isOpen && (
