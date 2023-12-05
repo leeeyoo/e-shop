@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import NaverProvider from "next-auth/providers/naver"
 import KakaoProvider from "next-auth/providers/kakao"
@@ -7,7 +7,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "@/libs/prismadb"
 import bcrypt from "bcrypt"
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -18,7 +18,7 @@ export default NextAuth({
       clientId: process.env.NAVER_CLIENT_ID as string,
       clientSecret: process.env.NAVER_SECRET as string,
     }),
-	  KakaoProvider({
+    KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID as string,
       clientSecret: process.env.KAKAO_SECRET as string,
     }),
@@ -35,7 +35,7 @@ export default NextAuth({
         },
       },
       async authorize(credentials) {
-        if(!credentials?.email || !credentials.password) {
+        if (!credentials?.email || !credentials.password) {
           throw new Error("Invalid email or password")
         }
 
@@ -45,7 +45,7 @@ export default NextAuth({
           }
         })
 
-        if(!user || !user?.hashedPassword) {
+        if (!user || !user?.hashedPassword) {
           throw new Error("Invalid email or password")
         }
 
@@ -54,7 +54,7 @@ export default NextAuth({
           user.hashedPassword
         )
 
-        if(!isCorrectPassword) {
+        if (!isCorrectPassword) {
           throw new Error("Invalid email or password")
         }
 
@@ -70,4 +70,6 @@ export default NextAuth({
     strategy: "jwt"
   },
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+export default NextAuth(authOptions)

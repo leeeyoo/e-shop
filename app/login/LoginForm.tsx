@@ -7,13 +7,16 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Link from "next/link";
 import { FaGoogle } from "react-icons/fa";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { 
+  const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
       email: "",
@@ -21,19 +24,36 @@ const LoginForm = () => {
     }
   })
 
+  const router = useRouter()
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
-    console.log(data)
+    signIn("credentials", {
+      ...data,
+      redirect: false
+    }).then((callback) => {
+      setIsLoading(false)
+
+      if (callback?.ok) {
+        router.push("/cart")
+        router.refresh()
+        toast.success("Logged in")
+      }
+
+      if (callback?.error) {
+        toast.error(callback.error)
+      }
+    })
   }
-  
-  return ( 
+
+  return (
     <>
       <Heading title="Sign in to -4degree" />
       <Button
         outline
         label="Continue with Google"
         icon={FaGoogle}
-        onClick={() => {}}
+        onClick={() => { }}
       />
       <hr className="bg-neutral-300 w-full h-px" />
       <Input
@@ -58,7 +78,7 @@ const LoginForm = () => {
         Do not have an account? <Link className="underline" href="/register">Sign up</Link>
       </p>
     </>
-   );
+  );
 }
- 
+
 export default LoginForm;

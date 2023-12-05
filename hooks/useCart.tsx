@@ -31,17 +31,14 @@ export const CartContextProvider = (props: Props) => {
     setCartProducts(cProducts)
   }, [])
 
-  console.log("qty", cartTotalQty)
-  console.log("total", cartTotalAmount)
-
   useEffect(() => {
     const getTotals = () => {
-      if(cartProducts) {
+      if (cartProducts) {
         const { total, qty } = cartProducts?.reduce((acc, item) => {
           const itemTotal = item.price * item.quantity
           acc.total += itemTotal
           acc.qty += item.quantity
-  
+
           return acc
         }, {
           total: 0,
@@ -59,7 +56,7 @@ export const CartContextProvider = (props: Props) => {
     setCartProducts((prev) => {
       let updatedCart;
 
-      if(prev) {
+      if (prev) {
         updatedCart = [...prev, product]
       } else {
         updatedCart = [product]
@@ -72,7 +69,7 @@ export const CartContextProvider = (props: Props) => {
   }, [])
 
   const handleRemoveProductFromCart = useCallback((product: CartProductType) => {
-    if(cartProducts) {
+    if (cartProducts) {
       const filteredProducts = cartProducts.filter((item) => {
         return item.id !== product.id
       })
@@ -85,15 +82,15 @@ export const CartContextProvider = (props: Props) => {
 
   const handleCartQtyIncrease = useCallback((product: CartProductType) => {
     let updatedCart
-    
-    if(product.quantity === 99) return toast.error("Oops! Maximum reached")
 
-    if(cartProducts) {
+    if (product.quantity === 99) return toast.error("Oops! Maximum reached")
+
+    if (cartProducts) {
       updatedCart = [...cartProducts]
 
       const existingIndex = cartProducts.findIndex((item) => item.id === product.id)
 
-      if(existingIndex > -1) {
+      if (existingIndex > -1) {
         updatedCart[existingIndex].quantity = ++updatedCart[existingIndex].quantity
       }
 
@@ -104,15 +101,15 @@ export const CartContextProvider = (props: Props) => {
 
   const handleCartQtyDecrease = useCallback((product: CartProductType) => {
     let updatedCart
-    
-    if(product.quantity === 1) return toast.error("Oops! Minimum reached")
 
-    if(cartProducts) {
+    if (product.quantity === 1) return toast.error("Oops! Minimum reached")
+
+    if (cartProducts) {
       updatedCart = [...cartProducts]
 
       const existingIndex = cartProducts.findIndex((item) => item.id === product.id)
 
-      if(existingIndex > -1) {
+      if (existingIndex > -1) {
         updatedCart[existingIndex].quantity = --updatedCart[existingIndex].quantity
       }
 
@@ -144,7 +141,7 @@ export const CartContextProvider = (props: Props) => {
 export const useCart = () => {
   const context = useContext(CartContext);
 
-  if(context === null) {
+  if (context === null) {
     throw new Error("useCart must be used within a CartContextProvider")
   }
 
