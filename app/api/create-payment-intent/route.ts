@@ -3,7 +3,6 @@ import prisma from "@/libs/prismadb"
 import { NextResponse } from "next/server"
 import { CartProductType } from "@/app/product/[productId]/ProductDetails"
 import { getCurrentUser } from "@/actions/getCurrentUser"
-import { useQuery } from "@tanstack/react-query"
 
 const calculateOrderAmount = (items: CartProductType[]) => {
   const totalPrice = items.reduce((acc, item) => {
@@ -37,20 +36,16 @@ export async function POST(request: Request) {
     // update the order
   } else {
     // create the intent
-    const paymentIntent = await loadPaymentWidget(
-      process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string, orderData.user.connect.id
-    )
+    const paymentIntent = await loadPaymentWidget(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string, orderData.user.connect.id)
     // create the order
+    orderData.paymentIntentId = paymentIntent.
+    await paymentIntent?.requestPayment({
+      orderId: orderData.user.connect.id,
+      orderName: "토스 티셔츠 외 2건",
+      customerName: "김토스",
+      customerEmail: "customer123@gmail.com",
+      successUrl: window.location.origin + "/sandbox/success" + window.location.search,
+      failUrl: window.location.origin + "/sandbox/fail" + window.location.search
+    });
   }
-}
-
-function usePaymentWidget(clientKey: string, customerKey: string) {
-  return useQuery({
-    queryKey: ["payment-widget", clientKey, customerKey],
-    queryFn: () => {
-      // ------  결제위젯 초기화 ------
-      // @docs https://docs.tosspayments.com/reference/widget-sdk#sdk-설치-및-초기화
-      return loadPaymentWidget(clientKey, customerKey);
-    },
-  });
 }
