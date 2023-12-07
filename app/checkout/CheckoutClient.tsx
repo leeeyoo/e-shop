@@ -1,15 +1,15 @@
 "use client"
 
-import { useCart } from "@/hooks/useCart"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import { useCart } from "@/hooks/useCart"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 const CheckoutClient = () => {
-  const cartProducts = useCart()
-  const [ loading, setLoading ] = useState(false)
-  const [ error, setError ] = useState(false)
-  const [ clientSecret, setClientSecret ] = useState("")
+  const { cartProducts, paymentIntent, handleSetPaymentIntent } = useCart()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [clientSecret, setClientSecret] = useState("")
 
   const router = useRouter()
 
@@ -21,7 +21,7 @@ const CheckoutClient = () => {
 
       fetch("/api/create-payment-intent", {
         method: "POST",
-        headers: {"Content-type": "application/json"},
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify({
           items: cartProducts
           payment_intent_id: paymentIntent
@@ -42,9 +42,9 @@ const CheckoutClient = () => {
       })
     }
   }, [cartProducts, paymentIntent])
-  return ( 
+  return (
     <>Checkout</>
-   );
+  );
 }
- 
+
 export default CheckoutClient;

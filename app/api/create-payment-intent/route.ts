@@ -1,8 +1,13 @@
-import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk"
+import Stripe from "stripe"
 import prisma from "@/libs/prismadb"
 import { NextResponse } from "next/server"
 import { CartProductType } from "@/app/product/[productId]/ProductDetails"
 import { getCurrentUser } from "@/actions/getCurrentUser"
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string,
+  {
+    apiVersion: "2023-10-16",
+  })
 
 const calculateOrderAmount = (items: CartProductType[]) => {
   const totalPrice = items.reduce((acc, item) => {
@@ -15,15 +20,15 @@ const calculateOrderAmount = (items: CartProductType[]) => {
 export async function POST(request: Request) {
   const currentUser = await getCurrentUser()
 
-  if(!currentUser) {
-    return NextResponse.json({error: "Unauthorized"}, {status: 401})
+  if (!currentUser) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const body = await request.json()
-  const {items, payment_intent_id} = body
+  const { items, payment_intent_id } = body
   const total = calculateOrderAmount(items)
   const orderData = {
-    user: {connect: {id: currentUser.id}},
+    user: { connect: { id: currentUser.id } },
     amount: total,
     currency: "krw",
     status: "pending",
@@ -33,19 +38,44 @@ export async function POST(request: Request) {
   }
 
   if (payment_intent_id) {
-    // update the order
+    const current_intent = await stripe.paymentIntents.retrieve(payment_intent_id)
+
+    if (current_intent) {
+      const updated_intent = await stripe.paymentIntents.update(payment_intent_id, { amount: total })
+
+      // update the order
+      const [existing_order, update_order] = await Promise.all([
+        prisma.order.findFirst({
+          where: { paymentIntentId: payment_intent_id }
+        }),
+        prisma.order.update({
+          where: { paymentIntentId: payment_intent_id },
+          data: {
+            amount: total,
+            products: items
+          }
+        })
+      ])
+
+      if (!existing_order) {
+        return NextResponse.json({ error: "Invalid Payment Intent" }, { status: 401 })
+      }
+      return NextResponse.json({ paymentIntent: updated_intent })
+    }
   } else {
     // create the intent
-    const paymentIntent = await loadPaymentWidget(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string, orderData.user.connect.id)
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: total,
+      currency: "krw",
+      automatic_payment_methods: { enabled: true },
+    })
+
     // create the order
-    orderData.paymentIntentId = paymentIntent.
-    await paymentIntent?.requestPayment({
-      orderId: orderData.user.connect.id,
-      orderName: "토스 티셔츠 외 2건",
-      customerName: "김토스",
-      customerEmail: "customer123@gmail.com",
-      successUrl: window.location.origin + "/sandbox/success" + window.location.search,
-      failUrl: window.location.origin + "/sandbox/fail" + window.location.search
-    });
+    orderData.paymentIntentId = paymentIntent.id
+
+    await prisma.order.create({
+      data: orderData
+    })
+    return NextResponse.json({ paymentIntent })
   }
 }

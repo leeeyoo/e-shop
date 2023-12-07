@@ -3,7 +3,7 @@ import FormWrap from "../components/FormWrap";
 import CheckoutClient from "./CheckoutClient";
 
 const Checkout = () => {
-  return ( 
+  return (
     <div className="p-8">
       <Container>
         <FormWrap>
@@ -11,7 +11,7 @@ const Checkout = () => {
         </FormWrap>
       </Container>
     </div>
-   );
+  );
 }
- 
+
 export default Checkout;
