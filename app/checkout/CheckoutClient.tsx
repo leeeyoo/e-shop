@@ -13,6 +13,10 @@ const CheckoutClient = () => {
 
   const router = useRouter()
 
+  console.log("paymentIntent", paymentIntent)
+  console.log("clientSecret", clientSecret)
+
+
   useEffect(() => {
     // Create a paymentintent as soon as the page loads
     if (cartProducts) {
@@ -23,25 +27,28 @@ const CheckoutClient = () => {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({
-          items: cartProducts
+          items: cartProducts,
           payment_intent_id: paymentIntent
         })
-      }).then((res) => {
+      })
+      .then((res) => {
         setLoading(false)
         if (res.status === 401) {
           return router.push("/login")
         }
         return res.json()
-      }).then((data) => {
+      })
+      .then((data) => {
         setClientSecret(data.paymentIntent.client_secret)
         handleSetPaymentIntent(data.paymentIntent.id)
-      }).catch(() => {
+      })
+      .catch((error) => {
         setError(true)
         console.log("Error", error)
         toast.error("Something went wrong")
       })
     }
-  }, [cartProducts, paymentIntent])
+  }, [cartProducts, paymentIntent, router, handleSetPaymentIntent])
   return (
     <>Checkout</>
   );
