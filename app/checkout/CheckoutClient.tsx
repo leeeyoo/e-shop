@@ -24,7 +24,7 @@ const CheckoutClient = () => {
 
       fetch("/api/create-payment-intent", {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: cartProducts,
           payment_intent_id: paymentIntent
