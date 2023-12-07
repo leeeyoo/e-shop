@@ -16,7 +16,6 @@ const CheckoutClient = () => {
   console.log("paymentIntent", paymentIntent)
   console.log("clientSecret", clientSecret)
 
-
   useEffect(() => {
     // Create a paymentintent as soon as the page loads
     if (cartProducts) {
