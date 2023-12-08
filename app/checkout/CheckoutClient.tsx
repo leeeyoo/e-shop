@@ -1,11 +1,11 @@
 "use client"
 
-import { useCart } from "@/hooks/useCart"
-import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js"
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
+import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
+import { useCart } from "@/hooks/useCart"
 import CheckoutForm from "./CheckoutForm"
 import Button from "../components/Button"
 
@@ -37,22 +37,22 @@ const CheckoutClient = () => {
           payment_intent_id: paymentIntent
         })
       })
-      .then((res) => {
-        setLoading(false)
-        if (res.status === 401) {
-          return router.push("/login")
-        }
-        return res.json()
-      })
-      .then((data) => {
-        setClientSecret(data.paymentIntent.client_secret)
-        handleSetPaymentIntent(data.paymentIntent.id)
-      })
-      .catch((error) => {
-        setError(true)
-        console.log("Error", error)
-        toast.error("Something went wrong")
-      })
+        .then((res) => {
+          setLoading(false)
+          if (res.status === 401) {
+            return router.push("/login")
+          }
+          return res.json()
+        })
+        .then((data) => {
+          setClientSecret(data.paymentIntent.client_secret)
+          handleSetPaymentIntent(data.paymentIntent.id)
+        })
+        .catch((error) => {
+          setError(true)
+          console.log("Error", error)
+          toast.error("Something went wrong")
+        })
     }
   }, [cartProducts, paymentIntent, router, handleSetPaymentIntent])
 
