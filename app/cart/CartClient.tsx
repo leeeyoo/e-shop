@@ -7,11 +7,20 @@ import Heading from "../components/Heading";
 import Button from "../components/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "@/utils/formatPrice";
+import { SafeUser } from "@/types";
+import { useRouter } from "next/navigation";
 
-const CartClient = () => {
+interface CartClientProps {
+  currentUser: SafeUser | null
+}
+
+const CartClient: React.FC<CartClientProps> = ({
+  currentUser
+}) => {
   const { cartProducts, handleClearCart, cartTotalAmount } = useCart()
+  const router = useRouter()
 
-  if(!cartProducts || cartProducts.length === 0) {
+  if (!cartProducts || cartProducts.length === 0) {
     return (
       <div className="flex flex-col items-center">
         <div className="text-2xl">Your cart is empty</div>
@@ -25,7 +34,7 @@ const CartClient = () => {
     )
   }
 
-  return ( 
+  return (
     <div>
       <Heading title="Shooping Cart" center />
       <div className="grid grid-cols-5 text-xs gap-4 pb-2 items-center mt-8">
@@ -48,18 +57,22 @@ const CartClient = () => {
             <span>Subtotal</span>
             <span>{formatPrice(cartTotalAmount)}</span>
           </div>
-            <p className="text-neutral-500">
-              Taxex and shipping calculate at checkout
-            </p>
-            <Button label="Checkout" onClick={() => {}} />
-            <Link href={"/"} className="text-neutral-500 flex items-center gap-1 mt-2">
-              <FaArrowLeft />
-              <span>Continue Shooping</span>
-            </Link>
+          <p className="text-neutral-500">
+            Taxex and shipping calculate at checkout
+          </p>
+          <Button
+            label={currentUser ? "Checkout" : "Login to Checkout"}
+            outline={currentUser ? false : true}
+            onClick={() => { currentUser ? router.push("/checkout") : router.push("/login") }}
+          />
+          <Link href={"/"} className="text-neutral-500 flex items-center gap-1 mt-2">
+            <FaArrowLeft />
+            <span>Continue Shooping</span>
+          </Link>
         </div>
       </div>
     </div>
-   );
+  );
 }
- 
+
 export default CartClient;
