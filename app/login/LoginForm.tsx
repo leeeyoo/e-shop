@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Heading from "../components/Heading";
-import Input from "../components/inputs/input";
+import Input from "../components/inputs/Input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Link from "next/link";
@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         outline
         label="Continue with Google"
         icon={FaGoogle}
-        onClick={() => {signIn("google")}}
+        onClick={() => { signIn("google") }}
       />
       <hr className="bg-neutral-300 w-full h-px" />
       <Input
