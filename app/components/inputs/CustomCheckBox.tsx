@@ -23,8 +23,20 @@ const CustomCheckBox: React.FC<CustomCheckBoxProps> = ({
         disabled={disabled}
         {...register(id)}
         placeholder=""
-        className="cursor-pointer"
+        className="peer cursor-pointer relative appearance-none shrink-0 w-5 h-5 border-2 border-neutral-300 rounded bg-white checked:bg-sky-500 checked:border-0 disabled:border-steel-400 disabled:bg-steel-400"
       />
+      <svg
+        className="absolute w-5 h-5 pointer-events-none hidden peer-checked:block stroke-white outline-none"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="butt"
+        strokeLinejoin="inherit"
+      >
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
       <label htmlFor={id} className="font-medium cursor-pointer">{label}</label>
     </div>
   );
