@@ -21,9 +21,8 @@ const SelectImage: React.FC<SelectImageProps> = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { "image/*": [".jpeg", ".png"] } })
 
   return (
-    <div
-      {...getRootProps()}
-      className="border-2 border-neutral-400 p-2 border-dashed cursor-pointer text-sm font-normal text-neutral-400 flex items-center justify-center"
+    <div {...getRootProps()}
+      className="border-2 border-neutral-400 p-2 border-dashed rounded-lg cursor-pointer text-sm font-normal text-neutral-400 flex items-center justify-center"
     >
       <input {...getInputProps()} />
       {isDragActive ? (<p>Drop the image here...</p>) : (<p>+ {item?.color} Image</p>)}
