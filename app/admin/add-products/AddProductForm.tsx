@@ -14,6 +14,8 @@ import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export type ImageType = {
   color: string;
@@ -28,6 +30,7 @@ export type UploadedImageType = {
 }
 
 const AddProductForm = () => {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [images, setImages] = useState<ImageType[] | null>()
   const [isProductCreated, setIsProductCreated] = useState(false)
@@ -81,7 +84,7 @@ const AddProductForm = () => {
           if (item.image) {
             const fileName = new Date().getTime() + "-" + item.image.name
             const storage = getStorage(firebaseApp)
-            const storageRef = ref(storage, `product/${fileName}`)
+            const storageRef = ref(storage, `products/${fileName}`)
             const uploadTask = uploadBytesResumable(storageRef, item.image)
 
             await new Promise<void>((resolve, reject) => {
@@ -127,6 +130,24 @@ const AddProductForm = () => {
         return toast.error("Error handling image uploads")
       }
     }
+
+    await handleImageUploads()
+    const productData = { ...data, images: uploadedImages }
+    console.log("productData", productData)
+
+    axios
+      .post("/api/product", productData)
+      .then(() => {
+        toast.success("Product created")
+        setIsProductCreated(true)
+        router.refresh()
+      })
+      .catch((error) => {
+        toast.error("Something went wrong when saving product to db")
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const category = watch("category")
