@@ -5,7 +5,12 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { formatPrice } from "@/utils/formatPrice";
 import Heading from "@/app/components/Heading";
 import Status from "@/app/components/Status";
-import { MdClose, MdDone } from "react-icons/md";
+import { MdCached, MdClose, MdDelete, MdDone, MdRemoveRedEye } from "react-icons/md";
+import ActionBtn from "@/app/components/ActionBtn";
+import { useCallback } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface ManageProductsClientProps {
   products: Product[]
@@ -14,6 +19,7 @@ interface ManageProductsClientProps {
 const ManageProductsClient: React.FC<ManageProductsClientProps> = ({
   products
 }) => {
+  const router = useRouter()
   let rows: any = []
 
   if (products) {
@@ -64,12 +70,29 @@ const ManageProductsClient: React.FC<ManageProductsClientProps> = ({
       headerName: "Actions",
       width: 200,
       renderCell: (params) => {
-        return (<div>Action</div>)
+        return (
+          <div className="flex justify-between gap-4 w-full">
+            <ActionBtn icon={MdCached} onClick={() => {}} />
+            <ActionBtn icon={MdDelete} onClick={() => {}} />
+            <ActionBtn icon={MdRemoveRedEye} onClick={() => {}} />
+          </div>
+        )
       }
     },
   ]
 
-
+  const handleToggleStock = useCallback((id: string, inStock: boolean) => {
+    axios
+      .put("/api/product", {id, inStock: !inStock})
+      .then((res) => {
+        toast.success("Product status changed")
+        router.refresh()
+      })
+      .catch((err) => {
+        toast.error("Oops! Something went wrong")
+        console.log(err)
+      })
+  }, [router])
 
   return (
     <div className="max-w-[1150px] m-auto text-xl">
@@ -88,6 +111,7 @@ const ManageProductsClient: React.FC<ManageProductsClientProps> = ({
           }}
           pageSizeOptions={[10, 20]}
           checkboxSelection
+          disableRowSelectionOnClick
         />
       </div>
     </div>
