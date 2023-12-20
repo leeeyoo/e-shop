@@ -4,6 +4,7 @@ import { Noto_Sans } from 'next/font/google'
 import CartCount from "./CartCount";
 import UserMenu from "./UserMenu";
 import { getCurrentUser } from "@/actions/getCurrentUser";
+import Categories from "./Categories";
 
 const logo = Noto_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] })
 
@@ -24,6 +25,7 @@ const NavBar = async () => {
           </div>
         </Container>
       </div>
+      <Categories />
     </div>
   );
 }
