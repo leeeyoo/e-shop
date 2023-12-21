@@ -28,7 +28,9 @@ export default async function getProducts(params: IProductParams) {
             name: {
               contains: searchString,
               mode: "insensitive"
-            },
+            }
+          },
+          {
             description: {
               contains: searchString,
               mode: "insensitive"
