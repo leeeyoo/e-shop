@@ -1,4 +1,5 @@
-import { products } from "@/utils/products";
+export const revalidate = 0
+
 import Container from "./components/Container";
 import HomeBanner from "./components/HomeBanner";
 import ProductCard from "./components/products/ProductCard";
