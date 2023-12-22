@@ -13,7 +13,7 @@ const NavBar = async () => {
   const currentUser = await getCurrentUser()
 
   return (
-    <div className="sticky top-0 w-full bg-white z-30 border-b-[1px]">
+    <div className="sticky top-0 w-full bg-white z-30">
       <div className="py-4 border-b-[1px]">
         <Container>
           <div className="flex items-center justify-between gap-3 md:gap-0">

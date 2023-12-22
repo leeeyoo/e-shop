@@ -15,7 +15,7 @@ const Categories = () => {
   if (!isMainPage) return null
 
   return (
-    <div className="bg-white">
+    <div className="bg-white border-b-[1px]">
       <Container>
         <div className="pt-4 flex flex-row items-center justify-between overflow-x-auto">
           {categories.map((item) => (
